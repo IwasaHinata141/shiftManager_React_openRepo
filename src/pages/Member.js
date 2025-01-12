@@ -10,6 +10,8 @@ import Status from "../components/Status.js";
 import Header from "../components/Header.js";
 
 const Member = () => {
+  
+
   const [user, setUser] = useState([]);
   const [Info, setInfo] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +97,7 @@ const Member = () => {
       };
       const data = JSON.stringify(Data)
       console.log(data);
-      const Url = 'https://delete-group-gpp774oc5q-an.a.run.app';
+      const Url = 'https://delete-member-gpp774oc5q-an.a.run.app';
       const element = {
         headers: {
           "Content-Type": "application/json;"
@@ -170,6 +172,7 @@ const Member = () => {
             ) : (
               <div>
                 <div className="mainApp">
+                  
                   <Status status={status} Info={Info} handleClick={handleClick} member={member} />
                   <Edit Info={Info} member={member} applicants={applicants} deleteMember={deleteMember} admitMember={admitMember} />
                 </div>

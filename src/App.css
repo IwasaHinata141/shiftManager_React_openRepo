@@ -4,8 +4,18 @@
   box-sizing: border-box;
 }
 
+.calendar{
+  position: relative;
+  top: 10vh;
+  left: 20%;
+  width: 80%;
+  height: max-content;
+  float: left;
+  background-color: beige;
+  z-index: -1;
+}
+
 .mainApp {
-  z-index: 1;
   position: relative;
   top: 10vh;
   left: 20%;
@@ -18,10 +28,25 @@
   background-color: beige;
 }
 
+
 ul {
   list-style: none;
 }
+/*----------modal----------*/
+.Modal{
+  z-index: 999;
+  position: relative;
+}
+.modal-content {
+  /* モーダルのコンテンツの幅と高さを調整 */
+  width: 400px;
+  height: 400px;
+  /* その他のスタイルをここに追加 */
+}
 
+.form-group {
+  margin-bottom: 15px;
+}
 /*---------Sidebar---------*/
 .SidebarApp {
   position: fixed;
@@ -136,9 +161,9 @@ ul {
   font-size: 13px;
 }
 
-/*-------heade---------*/
+/*-------header---------*/
+
 .header {
-  z-index: 10;
   position: fixed;
   top: 0;
   left: 0;
@@ -278,6 +303,15 @@ ul {
 /*----shiftpage-----*/
 .shiftPage {
   text-align: center;
+  position: relative;
+  top: 10vh;
+  left: 20%;
+  width: 80%;
+  height: max-content;
+  float: left;
+  padding: 20px;
+  padding-bottom: 50px;
+  background-color: beige;
 }
 
 .shiftPage .title {
@@ -373,7 +407,7 @@ ul {
 
 .infoBox {
   width: 50vw;
-  text-align: left;
+  text-align: center;
 }
 
 .fileReception {
@@ -446,4 +480,8 @@ ul {
 .firstGroupCreateContentBox .title{
   font-size: large;
   text-align: center;
+}
+
+.fullcalendar{
+  padding: 50px;
 }

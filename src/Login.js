@@ -3,7 +3,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase.js";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link} from "react-router-dom";
 
 const Login = () => {
   const [loginEmail, setLoginEmail] = useState("");
@@ -60,7 +60,7 @@ const Login = () => {
               />
             </div>
             <button>ログイン</button>
-            {/*<p>新規登録は<Link to={`/register/`}>こちら</Link></p>*/}
+            <p>新規登録は<Link to={`/register/`}>こちら</Link></p>
           </form>
         </>
       )}

@@ -21,7 +21,7 @@ const FirstGroupCreate = () => {
         const docSnap1 = await getDoc(docRef1);
         const groups = docSnap1.data();
 
-        console.log(groups["1"].groupName !== "no data" );
+        console.log(groups["1"].groupName !== "no data");
         setInfo(groups);
         setLoading(false);
       }
