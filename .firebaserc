@@ -1,5 +1,5 @@
 {
   "projects": {
-    "default": "shiftmaker-fee68"
+    "default": "PROJECT_ID"
   }
 }
