@@ -1,26 +1,29 @@
 import React from 'react'
+import { useGroup } from '../fetch/CurrentGroupFetch'
 
 const Header = (props) => {
+
+  const { currentGroup, isCurrentGroupLoading } = useGroup(props.uid);
+
+
   return (
     <div className="header">
       <h1>shiftManager Console</h1>
 
-      {!props.loading ? (
+      {!isCurrentGroupLoading && currentGroup ? (
         <div className='currentGroupInfo'>
-        <p className='groupname'>{props.Info.groupName}</p>
-        <div>
-        {props.status ? (
-        <p>募集中</p>
-      ) : (
-        <p>停止中</p>
-      )}
+          <p className='groupname'>{currentGroup.groupName}</p>
+          <div>
+            {currentGroup.status ? (
+              <p>募集中</p>
+            ) : (
+              <p>停止中</p>
+            )}
+          </div>
         </div>
-      </div>
-      ):(
-        <div>取得中..</div>
+      ) : (
+        <div></div>
       )}
-      
-
     </div>
   )
 }

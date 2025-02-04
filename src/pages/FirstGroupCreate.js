@@ -1,31 +1,17 @@
 import React from 'react'
 import { onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect, useRef } from "react";
-import { auth, db } from "../firebase.js";
-import { doc, getDoc, } from "firebase/firestore";
+import { auth } from "../firebase.js";
 import { Navigate } from "react-router-dom";
+import { useGroup } from "../fetch/CurrentGroupFetch.js"
 
 const FirstGroupCreate = () => {
   const [user, setUser] = useState([]);
-  const [Info, setInfo] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { currentGroup, isCurrentGroupLoading } = useGroup(user);
 
   useEffect(() => {
-    console.log(auth.currentUser);
     onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        const uid = currentUser.uid;
-
-        const docRef1 = doc(db, "Users", uid, "MyInfo", "groups");
-        const docSnap1 = await getDoc(docRef1);
-        const groups = docSnap1.data();
-
-        console.log(groups["1"].groupName !== "no data");
-        setInfo(groups);
-        setLoading(false);
-      }
-
+      setUser(currentUser.uid);
     });
   }, []);
 
@@ -67,10 +53,10 @@ const FirstGroupCreate = () => {
     <div>
 
       <div>
-        {!loading ? (
+        {!isCurrentGroupLoading ? (
           <div className="firstGroupCreateApp">
             <div className='firstGroupCreateContentBox'>
-              {Info["1"].groupName !== "no data" ? (
+              {currentGroup.groups["1"].groupName !== "no data" ? (
                 <Navigate to={'/'} />
               ) : (
                 <div>
@@ -87,7 +73,7 @@ const FirstGroupCreate = () => {
                       </li>
                     </ul>
                     <div className='submitArea'>
-                      <div className='submit' onClick={() => createGroup(user.uid)}>作成</div>
+                      <div className='submit' onClick={() => createGroup(user)}>作成</div>
                     </div>
                     <div className='spacer'></div>
                   </div>

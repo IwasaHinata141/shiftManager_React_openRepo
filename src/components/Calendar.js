@@ -4,9 +4,13 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import Modal from 'react-modal';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from "../firebase.js";
+import { useMemberUid } from '../fetch/UidFetch.js';
+import { useGroup } from '../fetch/CurrentGroupFetch.js';
+import { useSWRConfig } from 'swr';
+import { useMemberAndApplicants } from '../fetch/MemberFetch.js';
 
 
 Modal.setAppElement('#root');
@@ -14,67 +18,44 @@ Modal.setAppElement('#root');
 
 
 export const Calendar = (props) => {
+  var memberUidKey = {};
+  const uid = props.user;
+
+  const { mutate } = useSWRConfig();
+  const { currentGroup, isCurrentGroupLoading } = useGroup(uid);
+  const { memberAndApplicants, isLoading, } = useMemberAndApplicants(currentGroup.groupId);
+  memberUidKey["shiftList"] = currentGroup.RequestShiftList;
+  memberUidKey["member"] = memberAndApplicants["member"]; 
+  const { memberuidData, isMemberUidLoading } = useMemberUid(memberUidKey);
+  const memberList = memberuidData["memberList"];
+  const memberUidDoc = memberuidData["memberUidDoc"];
+  const calendarEventsData = memberuidData["EventList"];
+
+
+  // モーダルの起動
   const [modalIsOpenEventClick, setModalIsOpenEventClick] = useState(false);
   const [modalIsOpenDateClick, setModalIsOpenDateClick] = useState(false);
+  // 日付の選択
   const [selectDay, setSelectedDay] = useState();
-  const [options, setOptions] = useState(
-    props.memberList
-  );
-  const [selectedOption, setSelectedOption] = useState(options[0]);
-  const [calendarEvents, setCalendarEvents] = useState([]);
+  // 選択されたメンバー
+  const [selectedOption, setSelectedOption] = useState(memberList[0]);
+  // イベントの開始時刻と終了時刻
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
+  // イベントの名前
   const [eventUserName, setEventUserName] = useState("");
+  // イベントのID
   const [eventId, setEventId] = useState();
-  const [eventCount, setEventCount] = useState();
-
-
-
-  useEffect(() => {
-    let idCount = 0;
-    const EventList = [];
-    for (let i = 0; i < props.memberList.length; i++) {
-      const username = props.memberList[i];
-      const uid = props.memberUidDoc[username];
-      const shiftData = props.shiftList[uid];
-      if (shiftData !=null) {
-        var shiftDayList = Object.keys(shiftData["start"]);
-
-        for (let j = 0; j < Object.keys(shiftData["start"]).length; j++) {
-          const keyDate = shiftDayList[j];
-          const startTime = shiftData["start"][keyDate]
-          const endTime = shiftData["end"][keyDate]
-          const calendarEventInstance = {
-            id: idCount,
-            title: `${username}`,
-            start: `${keyDate} ${startTime}`,
-            end: `${keyDate} ${endTime}`,
-            backgroundColor: '#2093df',
-            editable: true,
-            uid: `${uid}`
-          };
-          EventList.push(calendarEventInstance);
-          idCount++;
-        }
-      }
-
-    }
-    setCalendarEvents(EventList);
-    setEventCount(EventList.length);
-  }, []);
 
 
 
   const handleDateClick = (e) => {
     setSelectedDay(e.dateStr);
-    setSelectedOption(options[0])
+    setSelectedOption(memberList[0])
     setModalIsOpenDateClick(true);
-    console.log(calendarEvents);
   }
   const handleEventClick = (arg) => {
-    console.log(arg.event);
     const dateStr = arg.event.startStr.split("T")[0];
-    console.log(dateStr);
     const startTimeflagment = arg.event.startStr.split("T")[1].split(":");
     const startTimeStr = startTimeflagment[0] + ":" + startTimeflagment[1];
     const endTimeflagment = arg.event.endStr.split("T")[1].split(":");
@@ -89,13 +70,13 @@ export const Calendar = (props) => {
   }
 
   /*--既にあるイベントの編集と追加--*/
-  const handleSaveEvent = () => {
+  const handleSaveEvent = async () => {
     // イベントデータをサーバーに送信する処理
     setModalIsOpenEventClick(false);
-    setModalIsOpenDateClick(false);
     const start = new Date(`${selectDay}T${startTime}:00.000+09:00`);
     const end = new Date(`${selectDay}T${endTime}:00.000+09:00`);
-    const uid = props.memberUidDoc[eventUserName];
+    const uid = memberUidDoc[eventUserName];
+    var newCalendarEvent = [];
     var newCalendarEventInstance = {};
     if (end > start) {
       newCalendarEventInstance = {
@@ -121,20 +102,37 @@ export const Calendar = (props) => {
         uid: `${uid}`
       };
     }
-    setCalendarEvents(calendarEvents.map((value, index) => (index === Number(eventId) ? newCalendarEventInstance : value)));
 
+    calendarEventsData.map((value, index) => {
+      newCalendarEvent.push(index === Number(eventId) ? newCalendarEventInstance : value);
+    });
+
+
+    mutate(memberUidKey, { "memberList": memberList, "EventList": newCalendarEvent, "memberUidDoc": memberUidDoc }, false);
+    try {
+      await submitShiftData(newCalendarEvent);
+    } catch (error) {
+      console.error('Error deleting event:', error);
+
+      // エラーが発生した場合、キャッシュを元に戻す
+      mutate(memberUidKey, calendarEventsData, false);
+    };
   };
+
+
+
 
   /*--新しいイベントの追加--*/
-  const handleSaveNewEvent = () => {
+  const handleSaveNewEvent = async () => {
+    setModalIsOpenDateClick(false);
     const start = new Date(`${selectDay}T${startTime}:00.000+09:00`);
     const end = new Date(`${selectDay}T${endTime}:00.000+09:00`);
-    const uid = props.memberUidDoc[selectedOption];
+    const uid = memberUidDoc[selectedOption];
+    var newCalendarEvent = [];
     var newCalendarEventInstance = {};
-    setModalIsOpenDateClick(false);
     if (end > start) {
       newCalendarEventInstance = {
-        id: eventCount,
+        id: calendarEventsData.length,
         title: `${selectedOption}`,
         start: `${selectDay} ${startTime}`,
         end: `${selectDay} ${endTime}`,
@@ -147,7 +145,7 @@ export const Calendar = (props) => {
       nextDate.setDate(nextDate.getDate() + 1);
       const nextDay = nextDate.toISOString().slice(0, 10);
       newCalendarEventInstance = {
-        id: eventCount,
+        id: calendarEventsData.length,
         title: `${selectedOption}`,
         start: `${selectDay} ${startTime}`,
         end: `${nextDay} ${endTime}`,
@@ -155,36 +153,57 @@ export const Calendar = (props) => {
         editable: true,
         uid: `${uid}`
       };
-    }
-    setEventCount(calendarEvents.length + 1);
-    setCalendarEvents([...calendarEvents, newCalendarEventInstance]);
+    };
+    calendarEventsData.map((value, index) => {
+      newCalendarEvent.push(value);
+    });
+    newCalendarEvent.push(newCalendarEventInstance);
+
+
+    mutate(memberUidKey, { "memberList": memberList, "EventList": newCalendarEvent, "memberUidDoc": memberUidDoc }, false);
+    try {
+      await submitShiftData(newCalendarEvent);
+    } catch (error) {
+      console.error('Error deleting event:', error);
+
+      // エラーが発生した場合、キャッシュを元に戻す
+      mutate(memberUidKey, calendarEventsData, false);
+    };
   };
 
-  const deleteEvent = () => {
+  const deleteEvent = async () => {
     setModalIsOpenEventClick(false)
-    var newCalenderEvents = [];
+    var newCalendarEvent = [];
     var checker = false;
-    calendarEvents.map((value, index) => {
+    calendarEventsData.map((value, index) => {
       if (index !== Number(eventId) && checker === false) {
-        newCalenderEvents.push(value);
+        newCalendarEvent.push(value);
       } else if (index !== Number(eventId) && checker === true) {
         value["id"] = index - 1;
-        newCalenderEvents.push(value);
+        newCalendarEvent.push(value);
       } else if (index === Number(eventId)) {
         checker = true;
       }
     });
-    setCalendarEvents(newCalenderEvents);
+
+    mutate(memberUidKey, { "memberList": memberList, "EventList": newCalendarEvent, "memberUidDoc": memberUidDoc }, false);
+    try {
+      await submitShiftData(newCalendarEvent);
+    } catch (error) {
+      console.error('Error deleting event:', error);
+
+      // エラーが発生した場合、キャッシュを元に戻す
+      mutate(memberUidKey, calendarEventsData, false);
+    };
   }
 
-  async function submitShiftData() {
+  async function submitShiftData(newCalendarEvents) {
     var document = {}
-    for (let i = 0; i < props.memberList.length; i++) {
-      const username = props.memberList[i];
-      const uid = props.memberUidDoc[username];
+    for (let i = 0; i < memberList.length; i++) {
+      const username = memberList[i];
+      const uid = memberUidDoc[username];
       var userShiftData = { "start": {}, "end": {} };
-      console.log(calendarEvents);
-      calendarEvents.map((value, index) => {
+      newCalendarEvents.map((value, index) => {
         if (uid === value["uid"]) {
           const startDateStr = value["start"].split(" ")[0];
           const endDateStr = value["end"].split(" ")[0];
@@ -200,22 +219,24 @@ export const Calendar = (props) => {
           document[value["uid"]] = userShiftData;
         }
       })
+      if (document[uid] == null) {
+        userShiftData = { "start": { "2015-01-01": "12:00" }, "end": { "2015-01-01": "13:00" } };
+        document[uid] = userShiftData;
+      }
     }
-    console.log(document);
-    const RequestShiftListRef = doc(db, "Groups", props.groupId, "groupInfo", "RequestShiftList");
+    const RequestShiftListRef = doc(db, "Groups", currentGroup.groupId, "groupInfo", "RequestShiftList");
     await setDoc(RequestShiftListRef, document);
   }
 
   async function confirmShiftData() {
     const Data = {
       data: {
-        userId: props.user.uid,
-        groupId: props.groupId,
-        groupName: props.groupName
+        userId: uid,
+        groupId: currentGroup.groupId,
+        groupName: currentGroup.groupName
       }
     };
     const data = JSON.stringify(Data)
-    console.log(data);
     const Url = 'https://send-shift-gpp774oc5q-an.a.run.app';
     const element = {
       headers: {
@@ -226,6 +247,10 @@ export const Calendar = (props) => {
       mode: 'cors'
     }
     await fetch(Url, element).catch(error => console.log(error));
+  }
+
+  if (isCurrentGroupLoading || isLoading || isMemberUidLoading) {
+    return <div></div>;
   }
 
   return (
@@ -280,7 +305,7 @@ export const Calendar = (props) => {
               <div className="form-group">
                 <label htmlFor="title">名前</label>
                 <select value={selectedOption} onChange={(e) => { setSelectedOption(e.target.value) }}>
-                  {options.map((option, index) => (
+                  {memberList.map((option, index) => (
                     <option key={index} value={option}>
                       {option}
                     </option>
@@ -297,7 +322,7 @@ export const Calendar = (props) => {
               </div>
             </div>
             <button onClick={() => { setModalIsOpenDateClick(false) }}>キャンセル</button>
-            <button onClick={handleSaveNewEvent}>保存</button>
+            <button onClick={handleSaveNewEvent}>追加</button>
           </Modal>
         </div>
       </div>
@@ -321,14 +346,13 @@ export const Calendar = (props) => {
               listMonth: '当月のシフト一覧',
             }}
 
-            events={calendarEvents}
+            events={calendarEventsData}
             weekends={true}
             dateClick={handleDateClick}
             eventClick={handleEventClick}
           />
         </div>
         <div className='submitArea'>
-          <button className='submit' onClick={submitShiftData}>一時保存</button>
           <button className='submit' onClick={confirmShiftData}>確定</button>
         </div>
 

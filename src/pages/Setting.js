@@ -5,49 +5,28 @@ import { useState, useEffect, useRef } from "react";
 import { auth, db } from "../firebase.js";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Header from '../components/Header.js';
+import { useGroup } from '../fetch/CurrentGroupFetch.js';
+import { reloadStatus } from '../fetch/Reload.js';
+import { useSWRConfig } from 'swr'
 
 const Setting = () => {
+  const { mutate } = useSWRConfig();
   const [user, setUser] = useState([]);
-  const [Info, setInfo] = useState([]);
   const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [num, setNum] = useState();
-  const [status, setStatus] = useState();
+  const { currentGroup, isCurrentGroupLoading } = useGroup(user.uid);
 
 
   useEffect(() => {
     onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        const uid = currentUser.uid;
-
-        const docRef0 = doc(db, "Users", uid, "MyInfo", "currentGroupNum");
-        const docSnap0 = await getDoc(docRef0);
-        const count = Number(docSnap0.data().currentNum);
-
-        const docRef1 = doc(db, "Users", uid, "MyInfo", "groups");
-        const docSnap1 = await getDoc(docRef1);
-        const groups = docSnap1.data();
-
-        const docRef2 = doc(db, "Users", uid, "MyInfo", "userInfo");
-        const docSnap2 = await getDoc(docRef2);
-        const username = docSnap2.data().username;
-
-        const docRef3 = doc(db, "Groups", groups[count].groupId, "groupInfo", "download",);
-        const docSnap3 = await getDoc(docRef3);
-        const status = docSnap3.data().status;
-
-        setInfo(groups);
-        setNum(count);
-        setUsername(username);
-        setStatus(status);
-        setLoading(false);
-      }
-
+      setUser(currentUser);
+      const docRef2 = doc(db, "Users", currentUser.uid, "MyInfo", "userInfo");
+      const docSnap2 = await getDoc(docRef2);
+      const username = docSnap2.data().username;
+      setUsername(username);
     });
   }, []);
 
-  const newName_reference = useRef();
+  // const newName_reference = useRef();
 
   async function changeGroup(target, uid) {
     const inputNum = Number(target + 1);
@@ -58,50 +37,55 @@ const Setting = () => {
     const tableRequestRef = doc(db, "Users", uid, "MyInfo", "currentGroupNum");
     await updateDoc(tableRequestRef, document);
 
-    setNum(inputNum);
-    window.location.reload();
-    console.log("done");
+    const newCount = { ...currentGroup, count: inputNum };
+    const options = {
+      optimisticData: newCount, rollbackOnError(error) {
+        // タイムアウトの AbortError だった場合はロールバックしません
+        return error.name !== 'AbortError'
+      },
+    };
+    mutate(uid, reloadStatus(uid), options);
   }
 
-  function changeInfo(Info, user) {
+  // function changeInfo(Info, user) {
 
-    const userInfoRef = doc(db, "Users", user.uid, "MyInfo", "userInfo");
-    updateDoc(userInfoRef, {
-      username: newName_reference.current.value
-    });
+  //   const userInfoRef = doc(db, "Users", user.uid, "MyInfo", "userInfo");
+  //   updateDoc(userInfoRef, {
+  //     username: newName_reference.current.value
+  //   });
 
-    console.log(Object.values(Info).length);
+  //   console.log(Object.values(Info).length);
 
-    for (var i = 1; i <= Object.values(Info).length; i++) {
-      const passRef = doc(db, "Groups", Info[i].groupId, "groupInfo", "pass");
-      updateDoc(passRef, {
-        adminName: newName_reference.current.value
-      });
-    }
-    setUsername(newName_reference.current.value);
-    newName_reference.current.value = "";
-  }
+  //   for (var i = 1; i <= Object.values(Info).length; i++) {
+  //     const passRef = doc(db, "Groups", Info[i].groupId, "groupInfo", "pass");
+  //     updateDoc(passRef, {
+  //       adminName: newName_reference.current.value
+  //     });
+  //   }
+  //   setUsername(newName_reference.current.value);
+  //   newName_reference.current.value = "";
+  // }
 
   return (
     <div>
       <div className="headerApp">
-        <Header status={status} Info={Info[num]} loading={loading}/>
+        <Header uid={user.uid} />
       </div>
       <div className="SidebarApp">
         <Sidebar />
       </div>
-      {!loading ? (
+      {!isCurrentGroupLoading ? (
         <div>
           <div className="mainApp">
             <h3>グループ変更</h3>
             <ul>
-              {Object.values(Info).map((value, key) => {
+              {Object.values(currentGroup.groups).map((value, key) => {
                 return (
                   <li key={key}>
                     <label>
                       <input
                         type='radio'
-                        checked={num === Number(key + 1)}
+                        checked={currentGroup.count === Number(key + 1)}
                         onChange={() => changeGroup(key, user.uid)}
                       />
                       {value.groupName}  グループID：{value.groupId}
@@ -119,7 +103,7 @@ const Setting = () => {
                   <li>アドレス：{user.email}</li>
                 </ul>
               </div>
-              <div className='editMyAccount'>
+              {/* <div className='editMyAccount'>
                 <h3>ユーザー情報編集</h3>
                 <ul>
                   <li>
@@ -130,7 +114,7 @@ const Setting = () => {
                   </li>
                 </ul>
                 <button onClick={() => changeInfo(Info, user)}>決定</button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -140,7 +124,7 @@ const Setting = () => {
         </>
       )}
     </div>
-    
+
   )
 }
 
