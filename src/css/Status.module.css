@@ -1,0 +1,125 @@
+
+
+.StatusIndicatorBox {
+  display: flex;
+  justify-content: right;
+}
+
+.StatusIndicator {
+  height: 5vh;
+  width: 20vw;
+  border: 1px, solid, #000;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background-color: #fff;
+  box-shadow: 10px 10px 20px -10px;
+}
+
+.memberList {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  box-shadow: 10px 10px 15px -10px;
+}
+
+.memberList .title {
+  text-align: center;
+  font-size: x-large;
+  font-weight: 400;
+  color: #fff;
+  background-color: #46525af6;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.memberListBox {
+  text-align: center;
+}
+
+.memberListBox .row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 5vh;
+  border-top: 1px solid #000;
+  background-color: #fff;
+}
+
+.row #name {
+  flex: 70%;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  border-right: 1px dotted #000;
+}
+
+.row #situation {
+  flex: 30%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+#done #situation {
+  color: rgb(50, 176, 35);
+  font-weight: bold;
+}
+
+#notyet #situation {
+  color: rgb(186, 28, 28);
+  font-weight: bold;
+}
+
+.row #buttonField {
+  flex: 30%;
+  display: grid;
+  place-items: center;
+  height: 100%;
+}
+
+.memberListBox #buttonField #insideField {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.memberListBox #buttonField #insideField {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.deleteButton {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.addButton,
+.refuseButton {
+  width: 100%;
+  height: 100%;
+  flex: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.row .deleteButton:hover,
+.row .addButton:hover,
+.row .refuseButton:hover,
+.StatusIndicator:hover {
+  cursor: pointer;
+  background-color: lightgray;
+}
+
+.Info {
+  font-size: large;
+  padding-top: 15px;
+}

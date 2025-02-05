@@ -11,6 +11,7 @@ import { useMemberUid } from '../fetch/UidFetch.js';
 import { useGroup } from '../fetch/CurrentGroupFetch.js';
 import { useSWRConfig } from 'swr';
 import { useMemberAndApplicants } from '../fetch/MemberFetch.js';
+import styles from '../css/Calendar.module.css';
 
 
 Modal.setAppElement('#root');
@@ -22,11 +23,11 @@ export const Calendar = (props) => {
   const uid = props.user;
 
   const { mutate } = useSWRConfig();
-  const { currentGroup, isCurrentGroupLoading } = useGroup(uid);
-  const { memberAndApplicants, isLoading, } = useMemberAndApplicants(currentGroup.groupId);
+  const { currentGroup } = useGroup(uid);
+  const { memberAndApplicants, } = useMemberAndApplicants(currentGroup.groupId);
   memberUidKey["shiftList"] = currentGroup.RequestShiftList;
-  memberUidKey["member"] = memberAndApplicants["member"]; 
-  const { memberuidData, isMemberUidLoading } = useMemberUid(memberUidKey);
+  memberUidKey["member"] = memberAndApplicants["member"];
+  const { memberuidData } = useMemberUid(memberUidKey);
   const memberList = memberuidData["memberList"];
   const memberUidDoc = memberuidData["memberUidDoc"];
   const calendarEventsData = memberuidData["EventList"];
@@ -103,7 +104,7 @@ export const Calendar = (props) => {
       };
     }
 
-    calendarEventsData.map((value, index) => {
+    calendarEventsData.forEach((value, index) => {
       newCalendarEvent.push(index === Number(eventId) ? newCalendarEventInstance : value);
     });
 
@@ -154,7 +155,7 @@ export const Calendar = (props) => {
         uid: `${uid}`
       };
     };
-    calendarEventsData.map((value, index) => {
+    calendarEventsData.forEach((value, index) => {
       newCalendarEvent.push(value);
     });
     newCalendarEvent.push(newCalendarEventInstance);
@@ -175,7 +176,7 @@ export const Calendar = (props) => {
     setModalIsOpenEventClick(false)
     var newCalendarEvent = [];
     var checker = false;
-    calendarEventsData.map((value, index) => {
+    calendarEventsData.forEach((value, index) => {
       if (index !== Number(eventId) && checker === false) {
         newCalendarEvent.push(value);
       } else if (index !== Number(eventId) && checker === true) {
@@ -203,7 +204,7 @@ export const Calendar = (props) => {
       const username = memberList[i];
       const uid = memberUidDoc[username];
       var userShiftData = { "start": {}, "end": {} };
-      newCalendarEvents.map((value, index) => {
+      newCalendarEvents.forEach((value, index) => {
         if (uid === value["uid"]) {
           const startDateStr = value["start"].split(" ")[0];
           const endDateStr = value["end"].split(" ")[0];
@@ -249,9 +250,6 @@ export const Calendar = (props) => {
     await fetch(Url, element).catch(error => console.log(error));
   }
 
-  if (isCurrentGroupLoading || isLoading || isMemberUidLoading) {
-    return <div></div>;
-  }
 
   return (
     <div>
@@ -326,34 +324,35 @@ export const Calendar = (props) => {
           </Modal>
         </div>
       </div>
-      <div className='fullcalendar'>
-        <div>
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
-            nowIndicator={true}
-            selectable={true}
-            allDaySlot={false}
-            locale="ja"
-            headerToolbar={{
-              center: "title",
-              right: 'dayGridMonth,listMonth',
-              left: "prev,next",
-            }}
-            buttonText={{
-              prev: '<',
-              next: '>',
-              dayGridMonth: 'カレンダー',
-              listMonth: '当月のシフト一覧',
-            }}
+      <div className={styles.fullcalendar}>
+        
+          <div className={styles.calendar}>
+            <FullCalendar
+              plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+              nowIndicator={true}
+              selectable={true}
+              allDaySlot={false}
+              locale="ja"
+              headerToolbar={{
+                center: "title",
+                right: 'dayGridMonth,listMonth',
+                left: "prev,next",
+              }}
+              buttonText={{
+                prev: '<',
+                next: '>',
+                dayGridMonth: 'カレンダー',
+                listMonth: '当月のシフト一覧',
+              }}
 
-            events={calendarEventsData}
-            weekends={true}
-            dateClick={handleDateClick}
-            eventClick={handleEventClick}
-          />
-        </div>
-        <div className='submitArea'>
-          <button className='submit' onClick={confirmShiftData}>確定</button>
+              events={calendarEventsData}
+              weekends={true}
+              dateClick={handleDateClick}
+              eventClick={handleEventClick}
+            />
+          </div>
+        <div className={styles.submitArea}>
+          <button className={styles.submit} onClick={confirmShiftData}>確定</button>
         </div>
 
       </div>

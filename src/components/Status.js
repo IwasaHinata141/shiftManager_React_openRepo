@@ -6,6 +6,7 @@ import { useMemberAndApplicants } from '../fetch/MemberFetch.js';
 import { useGroup } from '../fetch/CurrentGroupFetch.js';
 import { useSWRConfig } from 'swr'
 import { reloadFunc, reloadStatus } from '../fetch/Reload.js';
+import styles from '../css/Status.module.css';
 
 const Status = (props) => {
 
@@ -65,7 +66,7 @@ const Status = (props) => {
   }
 
   if (isCurrentGroupLoading || isLoading) {
-    return <div>Loading...</div>;
+    return <h2>Loading...</h2>;
   }
 
   return (
@@ -94,29 +95,29 @@ const Status = (props) => {
           </Modal>
         </div>
       </div>
-      <div className='StatusIndicatorBox'>
-        <div className='StatusIndicator' onClick={() => handleClick(currentGroup.status, currentGroup.groupId)}>募集/停止</div>
+      <div className={styles.StatusIndicatorBox}>
+        <div className={styles.StatusIndicator} onClick={() => handleClick(currentGroup.status, currentGroup.groupId)}>募集/停止</div>
       </div>
-      <div className='memberList'>
+      <div className={styles.memberList}>
         {member["1"] === "no data" ? (
           <p>メンバーがいません。</p>
         ) : (
-          <div className='memberListBox'>
-            <h3 className='title'>提出状況</h3>
+          <div className={styles.memberListBox}>
+            <h3 className={styles.title}>提出状況</h3>
             <ul>
               {Object.values(member).map((value, key) => {
                 if (value.situation === "done") {
                   return (
-                    <li key={key} className="row" id="done" onClick={() => changeNameModal(value, key)}>
-                      <div id="name">{value.name}</div>
-                      <div id="situation">{value.situation}!</div>
+                    <li key={key} className={styles.row} id={styles.done} onClick={() => changeNameModal(value, key)}>
+                      <div id={styles.name}>{value.name}</div>
+                      <div id={styles.situation}>{value.situation}!</div>
                     </li>
                   )
                 } else {
                   return (
-                    <li key={key} className="row" id="notyet" onClick={() => changeNameModal(value, key)}>
-                      <div id="name">{value.name}</div>
-                      <div id="situation">...{value.situation}</div>
+                    <li key={key} className={styles.row} id={styles.notyet} onClick={() => changeNameModal(value, key)}>
+                      <div id={styles.name}>{value.name}</div>
+                      <div id={styles.situation}>...{value.situation}</div>
                     </li>
                   )
                 }

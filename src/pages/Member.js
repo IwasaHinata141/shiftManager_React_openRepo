@@ -9,13 +9,20 @@ import Status from "../components/Status.js";
 import Header from "../components/Header.js";
 import { useGroup } from "../fetch/CurrentGroupFetch.js";
 
+
 const Member = () => {
   const [user, setUser] = useState([]);
-  const { currentGroup, isCurrentGroupLoading } = useGroup(user);
+  const { currentGroup } = useGroup(user);
 
   useEffect(() => {
     onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser.uid);
+      if(currentUser){
+        setUser(currentUser.uid);
+      }else{
+        return(
+          <Navigate to={'/login/'} />
+        )
+      }
     });
   }, []);
 
@@ -39,7 +46,6 @@ const Member = () => {
             ) : (
               <div>
                 <div className="mainApp">
-
                   <Status uid={user} />
                   <Edit uid={user} />
                 </div>

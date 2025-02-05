@@ -5,6 +5,7 @@ import { admitMember } from '../functions/admitMember.js';
 import { useSWRConfig } from 'swr'
 import { reloadFunc } from '../fetch/Reload.js';
 import { deleteMember } from '../functions/deleteMember.js';
+import styles from '../css/Status.module.css';
 
 const Edit = (props) => {
 
@@ -56,6 +57,7 @@ const Edit = (props) => {
   }
 
   async function handleDeleteMember(members, uid, groupId, docId) {
+    var newMemberAndApplicants = {};
     try {
       const newList = { 1: "no data" }
       var newCount = 1;
@@ -66,11 +68,11 @@ const Edit = (props) => {
         }
       }
       if (docId === "member") {
-        var newMemberAndApplicants = { "member": newList, "applicants": applicants };
+        newMemberAndApplicants = { "member": newList, "applicants": applicants };
       } else if (docId === "applicants") {
-        var newMemberAndApplicants = { "member": member, "applicants": newList };
+        newMemberAndApplicants = { "member": member, "applicants": newList };
       } else {
-        var newMemberAndApplicants = { "member": member, "applicants": applicants };
+        newMemberAndApplicants = { "member": member, "applicants": applicants };
       }
       deleteMember(uid, groupId, docId, newList);
       const newData = { ...memberAndApplicants, newMemberAndApplicants };
@@ -93,21 +95,21 @@ const Edit = (props) => {
 
   return (
     <div>
-      <div className='memberList'>
-        <h3 className='title'>グループメンバー編集</h3>
+      <div className={styles.memberList}>
+        <h3 className={styles.title}>グループメンバー編集</h3>
         {member["1"] === "no data" ? (
-          <div className='memberListBox'>
+          <div className={styles.memberListBox}>
             <p>メンバーがいません。</p>
           </div>
         ) : (
-          <div className='memberListBox'>
+          <div className={styles.memberListBox}>
             <ul>
               {Object.values(member).map((value, key) => {
                 return (
-                  <li key={key} className="row">
-                    <div id="name">{value.name}</div>
-                    <div id='buttonField'>
-                      <div className='deleteButton' onClick={() => handleDeleteMember(
+                  <li key={key} className={styles.row}>
+                    <div id={styles.name}>{value.name}</div>
+                    <div id={styles.buttonField}>
+                      <div className={styles.deleteButton} onClick={() => handleDeleteMember(
                         Object.values(member),
                         value.uid,
                         currentGroup.groupId,
@@ -121,30 +123,30 @@ const Edit = (props) => {
           </div>
         )}
       </div>
-      <p className='Info'>下記は参加申請を送ってきたユーザーの一覧です。グループに追加する場合は"承認"ボタンを、グループに追加しない場合は"拒否"ボタンを押してください</p>
-      <div className='memberList'>
-        <h3 className='title'>申請者一覧</h3>
-        {applicants["1"] == "no data" ? (
-          <div className='memberListBox'>
+      <p className={styles.Info}>下記は参加申請を送ってきたユーザーの一覧です。グループに追加する場合は"承認"ボタンを、グループに追加しない場合は"拒否"ボタンを押してください</p>
+      <div className={styles.memberList}>
+        <h3 className={styles.title}>申請者一覧</h3>
+        {applicants["1"] === "no data" ? (
+          <div className={styles.memberListBox}>
             <div>申請者はいません</div>
           </div>
         ) : (
-          <div className='memberListBox'>
+          <div className={styles.memberListBox}>
             <ul>
               {Object.values(applicants).map((value, key) => {
                 return (
-                  <li key={key} className="row">
-                    <div id="name">{value.name}</div>
-                    <div id='buttonField'>
-                      <div id='insideField'>
-                        <div className='addButton' onClick={() => handleAdmitMember(
+                  <li key={key} className={styles.row}>
+                    <div id={styles.name}>{value.name}</div>
+                    <div id={styles.buttonField}>
+                      <div id={styles.insideField}>
+                        <div className={styles.addButton} onClick={() => handleAdmitMember(
                           Object.values(applicants),
                           value,
                           currentGroup.groupId,
                           member,
                           currentGroup.groupName,
                         )}>承認</div>
-                        <div className='refuseButton' onClick={() => handleDeleteMember(
+                        <div className={styles.refuseButton} onClick={() => handleDeleteMember(
                           Object.values(applicants),
                           value.uid,
                           currentGroup.groupId,

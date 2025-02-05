@@ -1,13 +1,15 @@
 import React from 'react'
 import Sidebar from "../components/Sidebar";
 import { onAuthStateChanged } from "firebase/auth";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { auth, db } from "../firebase.js";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Header from '../components/Header.js';
 import { useGroup } from '../fetch/CurrentGroupFetch.js';
 import { reloadStatus } from '../fetch/Reload.js';
 import { useSWRConfig } from 'swr'
+import { Navigate } from "react-router-dom";
+
 
 const Setting = () => {
   const { mutate } = useSWRConfig();
@@ -18,11 +20,17 @@ const Setting = () => {
 
   useEffect(() => {
     onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      const docRef2 = doc(db, "Users", currentUser.uid, "MyInfo", "userInfo");
-      const docSnap2 = await getDoc(docRef2);
-      const username = docSnap2.data().username;
-      setUsername(username);
+      if (currentUser){
+        setUser(currentUser);
+        const docRef2 = doc(db, "Users", currentUser.uid, "MyInfo", "userInfo");
+        const docSnap2 = await getDoc(docRef2);
+        const username = docSnap2.data().username;
+        setUsername(username);
+      }else{
+        return(
+          <Navigate to={'/login/'} />
+        )
+      }
     });
   }, []);
 
@@ -120,7 +128,9 @@ const Setting = () => {
         </div>
       ) : (
         <>
-          <div>Loding...</div>
+          <div className='mainApp'>
+            <h2 className='loading'>Loading...</h2>
+          </div>
         </>
       )}
     </div>

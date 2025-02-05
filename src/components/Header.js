@@ -1,5 +1,6 @@
 import React from 'react'
 import { useGroup } from '../fetch/CurrentGroupFetch'
+import styles from '../css/Header.module.css'
 
 const Header = (props) => {
 
@@ -7,14 +8,15 @@ const Header = (props) => {
 
 
   return (
-    <div className="header">
+    <div className={styles.header}>
       <h1>shiftManager Console</h1>
 
       {!isCurrentGroupLoading && currentGroup ? (
-        <div className='currentGroupInfo'>
-          <p className='groupname'>{currentGroup.groupName}</p>
+        <div>
+          <p>{currentGroup.groupName}</p>
           <div>
             {currentGroup.status ? (
+              
               <p>募集中</p>
             ) : (
               <p>停止中</p>

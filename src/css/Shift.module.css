@@ -1,0 +1,105 @@
+.submitArea {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.submit {
+  width: 150px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background-color: #333;
+  color: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit:hover {
+  background-color: #555;
+}
+
+.shiftPage {
+  text-align: center;
+  position: relative;
+  top: 10vh;
+  left: 20%;
+  width: 80%;
+  height: max-content;
+  float: left;
+  padding: 50px;
+  padding-bottom: 50px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: beige;
+}
+
+.shiftPage .title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+
+.shiftBox {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 40px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.inputItemBox {
+  text-align: left;
+  margin: 20px 0;
+}
+
+.inputItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.inputItem #item {
+  flex: 1;
+  font-size: 1rem;
+  color: #555;
+}
+
+
+.inputItem #value {
+  flex: 3;
+  display: flex;
+  align-items: center;
+}
+
+.inputItem #value input[type="text"],
+.inputItem #value input[type="date"],
+.inputItem #value textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  color: #555;
+}
+
+.dateTitle {
+  font-size: 1.5rem;
+  color: #555;
+  flex: 1;
+  text-align: center;
+}
+
+.inputItem #value input[type="date"] {
+  flex: 2.5;
+}
+
+.textArea {
+  font-size: 1.5rem;
+}

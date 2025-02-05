@@ -43,7 +43,6 @@ ul {
   height: 400px;
   /* その他のスタイルをここに追加 */
 }
-
 .form-group {
   margin-bottom: 15px;
 }
@@ -129,6 +128,7 @@ ul {
   place-items: center;
 }
 
+/*----setting----*/
 .setting #icon,
 .logout #icon {
   flex: 30%;
@@ -161,263 +161,11 @@ ul {
   font-size: 13px;
 }
 
-/*-------header---------*/
-
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 10vh;
-  width: 100%;
-  background-color: #222;
-  color: #fff;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
 /*-------page--------*/
 .mainApp .row {
   display: flex;
 }
 
-.StatusIndicatorBox {
-  display: flex;
-  justify-content: right;
-}
-
-.StatusIndicator {
-  height: 5vh;
-  width: 20vw;
-  border: 1px, solid, #000;
-  border-radius: 15px;
-  display: grid;
-  place-items: center;
-  background-color: #fff;
-  box-shadow: 10px 10px 20px -10px;
-}
-
-.memberList {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  box-shadow: 10px 10px 15px -10px;
-}
-
-
-.memberList .title {
-  text-align: center;
-  font-size: x-large;
-  font-weight: 400;
-  color: #fff;
-  background-color: #46525af6;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
-
-.memberListBox {
-  text-align: center;
-}
-
-.memberListBox .row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 5vh;
-  border-top: 1px solid #000;
-  background-color: #fff;
-}
-
-.row #name {
-  flex: 70%;
-  display: grid;
-  place-items: center;
-  height: 100%;
-  border-right: 1px dotted #000;
-}
-
-.row #situation {
-  flex: 30%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-}
-
-#done #situation {
-  color: rgb(50, 176, 35);
-  font-weight: bold;
-}
-
-#notyet #situation {
-  color: rgb(186, 28, 28);
-  font-weight: bold;
-}
-
-.row #buttonField {
-  flex: 30%;
-  display: grid;
-  place-items: center;
-  height: 100%;
-}
-
-.memberListBox #buttonField #insideField {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
-.deleteButton {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-}
-
-.addButton,
-.refuseButton {
-  width: 100%;
-  height: 100%;
-  flex: 50%;
-  display: grid;
-  place-items: center;
-}
-
-.row .deleteButton:hover,
-.row .addButton:hover,
-.row .refuseButton:hover,
-.StatusIndicator:hover {
-  cursor: pointer;
-  background-color: lightgray;
-}
-
-.Info {
-  font-size: large;
-  padding-top: 15px;
-}
-
-/*----shiftpage-----*/
-.shiftPage {
-  text-align: center;
-  position: relative;
-  top: 10vh;
-  left: 20%;
-  width: 80%;
-  height: max-content;
-  float: left;
-  padding: 20px;
-  padding-bottom: 50px;
-  background-color: beige;
-}
-
-.shiftPage .title {
-  font-size: large;
-  text-align: center;
-}
-
-.shiftBox,
-.downloadBox {
-  border: 1px solid #000;
-  border-radius: 10px;
-  padding-top: 10px;
-  margin-bottom: 20px;
-  box-shadow: 10px 10px 15px -10px;
-  background-color: #fff;
-}
-
-.inputItem {
-  display: flex;
-  justify-content: left;
-  margin-bottom: 10px;
-}
-
-.inputItemBox {
-  text-align: center;
-  margin: 10px;
-}
-
-.inputItem #item {
-  flex: 20%;
-  display: grid;
-  place-items: center;
-  height: 100%;
-}
-
-.inputItem #value {
-  flex: 79%;
-  height: 100%;
-  display: flex;
-  justify-content: left;
-  font-size: 18px;
-}
-
-.submit {
-  width: 6vw;
-  height: 5vh;
-  display: grid;
-  place-items: center;
-  background-color: rgb(109, 100, 116);
-  color: #fff;
-  border-radius: 14px;
-  cursor: pointer;
-}
-
-.shiftBox .submit:hover {
-  background-color: rgb(51, 36, 65);
-}
-
-.submitArea {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.downloadButton,
-.uploadButton {
-  width: 12vw;
-  height: 5vh;
-  display: grid;
-  place-items: center;
-  background-color: rgb(109, 100, 116);
-  color: #fff;
-  border-radius: 14px;
-}
-
-.downloadButton:hover,
-.uploadButton:hover {
-  background-color: rgb(51, 36, 65);
-}
-
-.downloadButtonBox,
-.uploadButtonBox {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-}
-
-.infoBox {
-  width: 50vw;
-  text-align: center;
-}
-
-.fileReception {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.choiceFile {
-  cursor: pointer;
-}
 
 /*----createGroup----*/
 .manageGroup {
@@ -434,25 +182,7 @@ ul {
   text-align: center;
 }
 
-.spacer {
-  height: 30px;
-}
-
-.groupList {
-  text-align: center;
-  margin-bottom: 6px;
-}
-
-.groupList .row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 5vh;
-  border-top: 1px solid #000;
-  background-color: #fff;
-}
-
+/*----firstGroupCreate----*/
 .firstGroupCreateApp{
   z-index: 1;
     position: relative;
@@ -482,150 +212,11 @@ ul {
   text-align: center;
 }
 
-.fullcalendar{
-  padding: 50px;
-}
 
-/*----shift.jsのshiftPage----*/
 
-/* shiftPage内のスタイル */
-.shiftPage {
-  text-align: center;
-  position: relative;
-  top: 10vh;
-  left: 20%;
-  width: 80%;
-  height: max-content;
-  float: left;
-  padding: 20px;
-  padding-bottom: 50px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
-.shiftPage .title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-}
 
-.shiftBox {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
-.inputItemBox {
-  text-align: left;
-  margin: 20px 0;
-}
 
-.inputItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
 
-.inputItem #item {
-  flex: 1;
-  font-size: 1rem;
-  color: #555;
-}
 
-.inputItem #value {
-  flex: 2;
-  display: flex;
-  align-items: center;
-}
-
-.inputItem #value input[type="text"],
-.inputItem #value input[type="date"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-  color: #333;
-}
-
-.submitArea {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.submit {
-  width: 150px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  background-color: #333;
-  color: #fff;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit:hover {
-  background-color: #555;
-}
-
-.downloadBox,
-.uploadBox {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.downloadButton,
-.uploadButton {
-  width: 200px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  background-color: #333;
-  color: #fff;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.downloadButton:hover,
-.uploadButton:hover {
-  background-color: #555;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.infoBox {
-  width: 60%;
-  text-align: center;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.fileReception {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.choiceFile {
-  cursor: pointer;
-  color: #333;
-  text-decoration: underline;
-}

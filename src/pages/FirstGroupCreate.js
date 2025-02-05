@@ -4,17 +4,26 @@ import { useState, useEffect, useRef } from "react";
 import { auth } from "../firebase.js";
 import { Navigate } from "react-router-dom";
 import { useGroup } from "../fetch/CurrentGroupFetch.js"
+import { signOut } from "firebase/auth"
+import { useNavigate } from "react-router-dom";
+
 
 const FirstGroupCreate = () => {
   const [user, setUser] = useState([]);
   const { currentGroup, isCurrentGroupLoading } = useGroup(user);
+  const navigate = useNavigate();
 
   useEffect(() => {
     onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser.uid);
+      if (currentUser) {
+        setUser(currentUser.uid);
+      } else {
+        return (
+          <Navigate to={'/login/'} />
+        )
+      }
     });
   }, []);
-
 
   const groupName_reference = useRef();
   const groupPass_reference = useRef();
@@ -47,6 +56,10 @@ const FirstGroupCreate = () => {
     window.location.reload();
   }
 
+  const logout = async () => {
+    await signOut(auth);
+    navigate("/login/");
+  }
 
 
   return (
@@ -81,6 +94,9 @@ const FirstGroupCreate = () => {
                     <li>ユーザーを管理するグループが必要です</li>
                     <li>グループ名・グループパスワードは後から変更可能です</li>
                   </ul>
+                  <div onClick={() => logout()}>
+                    <div id='title'>ログアウト</div>
+                  </div>
                 </div>
               )}
             </div>
