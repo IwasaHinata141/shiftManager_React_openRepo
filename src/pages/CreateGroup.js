@@ -7,25 +7,24 @@ import Header from '../components/Header.js';
 import { Navigate } from "react-router-dom";
 import { useGroup } from '../fetch/CurrentGroupFetch.js';
 import styles from '../css/CreateGroup.module.css';
+import { useNavigate } from "react-router-dom";
 
 
 const CreateGroup = () => {
   const [user, setUser] = useState([]);
-
+  const navigate = useNavigate();
   const { currentGroup, isCurrentGroupLoading } = useGroup(user);
   console.log(isCurrentGroupLoading);
 
   useEffect(() => {
     onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser){
+      if (currentUser) {
         setUser(currentUser.uid);
-      }else{
-        return(
-          <Navigate to={'/login/'} />
-        )
+      } else {
+        navigate('/login');
       }
     });
-  }, []);
+  });
 
   const groupName_reference = useRef();
   const groupPass_reference = useRef();

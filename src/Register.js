@@ -3,8 +3,7 @@ import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/aut
 import { auth } from "./firebase";
 import { useState, useEffect } from "react";
 import { Navigate, Link } from "react-router-dom";
-
-
+import styles from "./css/Register.module.css"; // CSSモジュールをインポート
 
 const Register = () => {
   const [registerEmail, setRegisterEmail] = useState("");
@@ -15,6 +14,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!registerEmail || !registerPassword || !registerName) {
+      alert("全ての項目を入力してください");
+      return;
+    }
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -65,46 +68,47 @@ const Register = () => {
         {loading ? (
           <Navigate to={`/`} />
         ) : (
-          <>
-            <div>Loding...</div>
-          </>
+          <div className={styles.loading}>Loading...</div>
         )}
       </>
       ) : (
-        <>
-          <h1>新規登録</h1>
-          <form onSubmit={handleSubmit}>
-            <div>
-              <label>メールアドレス</label>
+        <div className={styles.container}>
+          <h1 className={styles.title}>新規登録</h1>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>メールアドレス</label>
               <input
                 name="email"
                 type="email"
                 value={registerEmail}
                 onChange={(e) => setRegisterEmail(e.target.value)}
+                className={styles.input}
               />
             </div>
-            <div>
-              <label>パスワード</label>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>パスワード</label>
               <input
                 name="password"
                 type="password"
                 value={registerPassword}
                 onChange={(e) => setRegisterPassword(e.target.value)}
+                className={styles.input}
               />
             </div>
-            <div>
-              <label>名前</label>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>名前</label>
               <input
                 name="name"
                 type="text"
                 value={registerName}
                 onChange={(e) => setRegisterName(e.target.value)}
+                className={styles.input}
               />
             </div>
-            <button>登録する</button>
-            <p>ログインは<Link to={`/login/`}>こちら</Link></p>
+            <button className={styles.button}>登録する</button>
+            <p className={styles.link}>ログインは<Link to={`/login/`}>こちら</Link></p>
           </form>
-        </>
+        </div>
       )}
     </>
   );

@@ -8,15 +8,14 @@ import Header from '../components/Header.js';
 import { useGroup } from '../fetch/CurrentGroupFetch.js';
 import { reloadStatus } from '../fetch/Reload.js';
 import { useSWRConfig } from 'swr'
-import { Navigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 const Setting = () => {
   const { mutate } = useSWRConfig();
   const [user, setUser] = useState([]);
   const [username, setUsername] = useState("");
   const { currentGroup, isCurrentGroupLoading } = useGroup(user.uid);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     onAuthStateChanged(auth, async (currentUser) => {
@@ -27,12 +26,11 @@ const Setting = () => {
         const username = docSnap2.data().username;
         setUsername(username);
       }else{
-        return(
-          <Navigate to={'/login/'} />
-        )
+        console.log("no user");
+        navigate('/login');
       }
     });
-  }, []);
+  });
 
   // const newName_reference = useRef();
 

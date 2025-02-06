@@ -8,7 +8,7 @@ import Header from '../components/Header.js';
 import { Calendar } from "../components/Calendar.js";
 import { useGroup } from '../fetch/CurrentGroupFetch.js';
 import styles from '../css/Shift.module.css';
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Shift = () => {
   const [days, setdays] = useState();
@@ -20,19 +20,18 @@ const Shift = () => {
   const message_reference1 = useRef();
 
   const { currentGroup, isCurrentGroupLoading } = useGroup(user);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser.uid);
       } else {
-        return (
-          <Navigate to={'/login/'} />
-        )
+        console.log("no user");
+        navigate('/login');
       }
     });
-  }, []);
+  });
 
   async function uploadRequest(groupId) {
     console.log(groupId);

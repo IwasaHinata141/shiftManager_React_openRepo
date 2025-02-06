@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 import { useGroup } from "../fetch/CurrentGroupFetch.js"
 import { signOut } from "firebase/auth"
 import { useNavigate } from "react-router-dom";
-
+import styles from "../css/FirstGroupCreate.module.css"; // CSSモジュールをインポート
 
 const FirstGroupCreate = () => {
   const [user, setUser] = useState([]);
@@ -18,12 +18,11 @@ const FirstGroupCreate = () => {
       if (currentUser) {
         setUser(currentUser.uid);
       } else {
-        return (
-          <Navigate to={'/login/'} />
-        )
+        console.log("no user");
+        navigate('/login');
       }
     });
-  }, []);
+  });
 
   const groupName_reference = useRef();
   const groupPass_reference = useRef();
@@ -63,51 +62,44 @@ const FirstGroupCreate = () => {
 
 
   return (
-    <div>
-
+    <div className={styles.container}>
       <div>
         {!isCurrentGroupLoading ? (
-          <div className="firstGroupCreateApp">
-            <div className='firstGroupCreateContentBox'>
+          <div className={styles.firstGroupCreateApp}>
+            <div className={styles.firstGroupCreateContentBox}>
               {currentGroup.groups["1"].groupName !== "no data" ? (
                 <Navigate to={'/'} />
               ) : (
                 <div>
                   <div>
-                    <h4 className='title'>新規グループの作成</h4>
-                    <ul className='inputItemBox'>
-                      <li className='inputItem'>
-                        <div id='item' >グループ名</div>
-                        <input type='text' ref={groupName_reference} id="value"></input>
+                    <h1 className={styles.title}>新規グループの作成</h1>
+                    <ul className={styles.inputItemBox}>
+                      <li className={styles.inputItem}>
+                        <div className={styles.item}>グループ名</div>
+                        <input type='text' ref={groupName_reference} className={styles.input}></input>
                       </li>
-                      <li className='inputItem'>
-                        <div id='item'>グループパスワード</div>
-                        <input type='text' ref={groupPass_reference} id="value"></input>
+                      <li className={styles.inputItem}>
+                        <div className={styles.item}>グループパスワード</div>
+                        <input type='text' ref={groupPass_reference} className={styles.input}></input>
                       </li>
                     </ul>
-                    <div className='submitArea'>
-                      <div className='submit' onClick={() => createGroup(user)}>作成</div>
+                    <div className={styles.submitArea}>
+                      <button className={styles.submit} onClick={() => createGroup(user)}>作成</button>
                     </div>
-                    <div className='spacer'></div>
+                    <div className={styles.spacer}></div>
                   </div>
-                  <ul className='groupList'>
+                  <ul className={styles.groupList}>
                     <li>ユーザーを管理するグループが必要です</li>
-                    <li>グループ名・グループパスワードは後から変更可能です</li>
                   </ul>
-                  <div onClick={() => logout()}>
-                    <div id='title'>ログアウト</div>
-                  </div>
+                  <button className={styles.logout} onClick={() => logout()}>ログアウト</button>
                 </div>
               )}
             </div>
           </div>
         ) : (
-          <>
-            <div>Loding...</div>
-          </>
+          <div className={styles.loading}>Loading...</div>
         )}
       </div>
-
     </div>
   )
 }
